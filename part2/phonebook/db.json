@@ -2,13 +2,8 @@
   "persons": [
     {
       "name": "Nogo",
-      "number": "2",
-      "id": 5
-    },
-    {
-      "name": "Mira",
-      "number": "123 123 3",
-      "id": 7
+      "number": "123 123 123",
+      "id": 1
     }
   ]
 }

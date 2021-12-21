@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import Filter from "./components/Filter";
-import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import personService from "./services/persons";
+import Notification from "./components/Notification";
 
 function App() {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -41,6 +42,23 @@ function App() {
                 person.id !== returnedPerson.id ? person : returnedPerson
               )
             );
+            setSuccessMessage(
+              `Number of ${returnedPerson.name} successfully updated`
+            );
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+          })
+          .catch((error) => {
+            setSuccessMessage(
+              `Sorry, dude, ${targetPerson.name} was already deleted.`
+            );
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000);
+            setPersons(
+              persons.filter((person) => person.id !== targetPerson.id)
+            );
           });
       }
     } else {
@@ -55,6 +73,12 @@ function App() {
           setPersons(persons.concat(returnedPerson));
           setNewName("");
           setNewNumber("");
+          setSuccessMessage(
+            `${returnedPerson.name} successfully added to your phonebook, you popular guy, you!`
+          );
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
         })
         .catch((error) => {
           console.log(error);
@@ -66,6 +90,10 @@ function App() {
     if (window.confirm(`Do you really want to delete ${name}?`)) {
       personService.deletePerson(id).then((returnedPerson) => {
         setPersons(persons.filter((person) => person.id !== id));
+        setSuccessMessage(`Deletion successfull, wahahaha`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
       });
     }
   };
@@ -81,6 +109,7 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <Filter changeFilterName={changeFilterName} />
 
       <h2>Add a new</h2>
